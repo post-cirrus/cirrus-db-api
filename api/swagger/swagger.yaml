@@ -1,57 +1,149 @@
 swagger: "2.0"
 info:
-  version: "0.0.1"
-  title: Hello World App
+  version: "0.0.2"
+  title: Cirrus Database API
 # during dev, should point to your local machine
-host: localhost:10010
-# basePath prefixes all resource paths 
-basePath: /
-# 
+host: 192.168.82.103:10083
+# basePath prefixes all resource paths
+basePath: /v2
+#
 schemes:
   # tip: remove http to make production-grade
   - http
-  - https
+#  - https
 # format of bodies a client can send (Content-Type)
 consumes:
   - application/json
+  - application/x-www-form-urlencoded
 # format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
-  /hello:
+  /users:
     # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
+    x-swagger-router-controller: users
     get:
-      description: Returns 'Hello' to the caller
+      description: Returns a list of users from the Cirrus DB
       # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+      operationId: list
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
+            $ref: "#/definitions/UserListBody"
         # responses may fall through to errors
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /swagger:
-    x-swagger-pipe: swagger_raw
+
+    post:
+      description: Create a new User in the Cirrus DB
+      # used as the method name of the controller
+      operationId: create
+      parameters:
+        - name: user
+          required: true
+          in: body
+          description: a new user details
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/User"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
+  UserListBody:
     required:
-      - message
+      - users
     properties:
-      message:
+      users:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+
+  User:
+    required:
+      - name
+      - email
+      - username
+      - password
+      - role
+    properties:
+      name:
         type: string
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      oauth:
+        type: array
+        items:
+          $ref: "#/definitions/oauth"
+      devices:
+        type: array
+        items:
+          $ref: "#/definitions/device"
+      community:
+        type: array
+        items:
+          $ref: "#/definitions/community"
+      created:
+        type: string
+        format: date
+
+  oauth:
+    required:
+      - provider
+      - access_token
+    properties:
+      provider:
+        type: string
+      access_token:
+        type: string
+
+  device:
+    required:
+      - name
+      - mac
+      - uuid
+    properties:
+      name:
+        type: string
+      mac:
+        type: string
+      uuid:
+        type: string
+
+  community:
+    required:
+      - name
+      - uuid
+      - users
+    properties:
+      name:
+        type: string
+      uuid:
+        type: string
+      users:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+
   ErrorResponse:
     required:
       - message

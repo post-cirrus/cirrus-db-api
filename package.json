@@ -1,6 +1,6 @@
 {
   "name": "cirrus-db-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "New Swagger API Project",
   "keywords": [],
@@ -9,7 +9,14 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "swagger-express-mw": "^0.1.0",
+    "mongoose": "~4.5.0",
+    "winston": "~2.2.0",
+    "config": "~1.21.0",
+    "toml": "~2.3.0",
+    "morgan": "~1.7.0",
+    "js-yaml": "~3.6.1",
+    "bcrypt": "~0.8.7"
   },
   "devDependencies": {
     "should": "^7.1.0",

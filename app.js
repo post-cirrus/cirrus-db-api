@@ -1,23 +1,34 @@
-'use strict';
+'use strict'
 
-var SwaggerExpress = require('swagger-express-mw');
-var app = require('express')();
-module.exports = app; // for testing
+var SwaggerExpress = require('swagger-express-mw')
+var app = require('express')()
+var mongoose = require('mongoose')
+var log = require('./api/helpers/logger')
+module.exports = app // for testing
+
+var port = process.env.PORT || 10083
+var dbUrl = process.env.DB_URL || 'db.cirrus.io'
+var dbPort = process.env.DB_PORT || 27017
+// Log Requests
+app.use(require('morgan')('combined', { 'stream': log.stream }))
 
 var config = {
   appRoot: __dirname // required config
-};
+}
 
-SwaggerExpress.create(config, function(err, swaggerExpress) {
-  if (err) { throw err; }
+SwaggerExpress.create(config, function (err, swaggerExpress) {
+  if (err) {
+    throw err
+  }
 
   // install middleware
-  swaggerExpress.register(app);
+  swaggerExpress.register(app)
 
-  var port = process.env.PORT || 10010;
-  app.listen(port);
-
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
-});
+  mongoose.connect('mongodb://' + dbUrl + ':' + dbPort + '/Cirrus')
+  mongoose.connection.on('error', log.error.bind(log, 'connection error: '))
+  mongoose.connection.once('open', function () {
+    app.listen(port, function () {
+      log.info('Starting CirrusDbQL server on port ' + port)
+    })
+  })
+})
