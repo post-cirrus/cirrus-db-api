@@ -16,7 +16,8 @@
     "toml": "~2.3.0",
     "morgan": "~1.7.0",
     "js-yaml": "~3.6.1",
-    "bcrypt": "~0.8.7"
+    "bcrypt": "~0.8.7",
+    "lodash": "~4.13.1"
   },
   "devDependencies": {
     "should": "^7.1.0",

@@ -9,6 +9,7 @@ module.exports = app // for testing
 var port = process.env.PORT || 10083
 var dbUrl = process.env.DB_URL || 'db.cirrus.io'
 var dbPort = process.env.DB_PORT || 27017
+var api_server = process.env.API_SERVER || 'clients.db.cirrus.io'
 // Log Requests
 app.use(require('morgan')('combined', { 'stream': log.stream }))
 
@@ -28,7 +29,7 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
   mongoose.connection.on('error', log.error.bind(log, 'connection error: '))
   mongoose.connection.once('open', function () {
     app.listen(port, function () {
-      log.info('Starting CirrusDbQL server on port ' + port)
+      log.info('Starting Cirrus DB API service: http://' + api_server + ':' + port)
     })
   })
 })

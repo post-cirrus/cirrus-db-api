@@ -1,5 +1,7 @@
 var mongoose = require('mongoose')
 var bcrypt = require('bcrypt')
+var log = require('../helpers/logger')
+var _ = require('lodash')
 var Schema = mongoose.Schema
 
 var UserSchema = new Schema({
@@ -37,8 +39,17 @@ var UserSchema = new Schema({
     }
   }],
   devices: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Device'
+    type: {
+      type: String,
+      required: true
+    },
+    mac: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String
+    }
   }],
   community: {
     type: Schema.Types.ObjectId,
@@ -48,9 +59,10 @@ var UserSchema = new Schema({
 })
 
 // Hashes user's password and stores it
-UserSchema.pre('save', function (next) {
+/*UserSchema.pre('save', function (next) {
   var user = this
-  if (this.isModified('password') || this.isNew) {
+  log.debug('Crypting password of user ' + this._id)
+//  if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(10, function (error, salt) {
       if (error) {
         return next(error)
@@ -59,13 +71,31 @@ UserSchema.pre('save', function (next) {
         if (error) {
           return next(error)
         }
+        log.debug('Password crypted password of user ' + this._id)
         user.password = hash
         next()
       })
     })
-  } else {
-    return next()
-  }
+//  } else {
+//    return next()
+//  }
 })
+
+UserSchema.pre('findOneAndUpdate', function (next) {
+  var query = this.getQuery()  // contains id
+  var update = this.getUpdate()
+  log.debug('Query: ' + JSON.stringify(query, null, 2))
+  log.debug('Update data ' + JSON.stringify(update, null, 2))
+  log.debug('password: ' + update.password)
+  this.findOne({_id: query._id}, function (error, user) {
+    if (error) {
+      return next(error)
+    }
+  //  if (_.has(update, 'password')) {
+    user.password = update.password
+    user.save()
+    next()
+  })
+})*/
 
 module.exports = mongoose.model('User', UserSchema)

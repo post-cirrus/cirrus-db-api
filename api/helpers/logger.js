@@ -7,11 +7,12 @@ var transports = []
 
 // Defines how the format of a logging has to be
 // Date|logging level|Module Name:Module Version|Message
-var formatter = function (options) {
+ /* var formatter = function (options) {
   return options.timestamp() + '|' + options.level.toUpperCase() + '|' + pjson.name + ':' + pjson.version + '|' +
     (undefined !== options.message ? options.message : '') +
     (options.meta && Object.keys(options.meta).length ? '\n\t' + JSON.stringify(options.meta) : '')
 }
+*/
 
 var timestamp = function () {
   return new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '') // // remove the 'T' and remove the . and everything after
@@ -23,8 +24,8 @@ if (cfgLog.logToConsole) {
     colorize: true,
     json: false,
     level: (cfgLog.debug) ? 'debug' : 'info',
-    timestamp: timestamp,
-    formatter: formatter
+    timestamp: timestamp
+//    formatter: formatter
   }))
 }
 
@@ -41,7 +42,7 @@ if (cfgLog.logToFile || (cfgLog.logToConsole === false && cfgLog.logToFile === f
     level: (cfgLog.debug) ? 'debug' : 'info',
     json: cfgLog.logFileJson,
     timestamp: timestamp,
-    formatter: formatter,
+//    formatter: formatter,
     maxSize: cfgLog.maxSize, // Logging to file, when filew reaches the maxSize an new file will be creted.
     maxFiles: cfgLog.maxFiles,
     tailable: cfgLog.tailable,
