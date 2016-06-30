@@ -52,7 +52,7 @@ paths:
           in: body
           description: a new user details
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/NewUser"
       responses:
         "200":
           description: Success
@@ -452,8 +452,33 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/User"
-
   User:
+    type: object
+    allOf:
+      - $ref: "#/definitions/NewUser"
+      - required:
+        - _id
+        properties:
+          _id:
+            type: integer
+            format: int64
+          oauth:
+            type: array
+            items:
+              $ref: "#/definitions/OAuth"
+          devices:
+            type: array
+            items:
+              $ref: "#/definitions/Device"
+          community:
+            type: array
+            items:
+              $ref: "#/definitions/Community"
+          created:
+            type: string
+            format: date
+      
+  NewUser:
     required:
       - name
       - email
@@ -471,21 +496,7 @@ definitions:
         type: string
       role:
         type: string
-      oauth:
-        type: array
-        items:
-          $ref: "#/definitions/OAuth"
-      devices:
-        type: array
-        items:
-          $ref: "#/definitions/Device"
-      community:
-        type: array
-        items:
-          $ref: "#/definitions/Community"
-      created:
-        type: string
-        format: date
+      
 
   OAuth:
     required:

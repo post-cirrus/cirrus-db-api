@@ -58,44 +58,4 @@ var UserSchema = new Schema({
   }
 })
 
-// Hashes user's password and stores it
-/*UserSchema.pre('save', function (next) {
-  var user = this
-  log.debug('Crypting password of user ' + this._id)
-//  if (this.isModified('password') || this.isNew) {
-    bcrypt.genSalt(10, function (error, salt) {
-      if (error) {
-        return next(error)
-      }
-      bcrypt.hash(user.password, salt, function (error, hash) {
-        if (error) {
-          return next(error)
-        }
-        log.debug('Password crypted password of user ' + this._id)
-        user.password = hash
-        next()
-      })
-    })
-//  } else {
-//    return next()
-//  }
-})
-
-UserSchema.pre('findOneAndUpdate', function (next) {
-  var query = this.getQuery()  // contains id
-  var update = this.getUpdate()
-  log.debug('Query: ' + JSON.stringify(query, null, 2))
-  log.debug('Update data ' + JSON.stringify(update, null, 2))
-  log.debug('password: ' + update.password)
-  this.findOne({_id: query._id}, function (error, user) {
-    if (error) {
-      return next(error)
-    }
-  //  if (_.has(update, 'password')) {
-    user.password = update.password
-    user.save()
-    next()
-  })
-})*/
-
 module.exports = mongoose.model('User', UserSchema)

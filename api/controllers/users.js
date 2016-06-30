@@ -29,15 +29,15 @@ module.exports = {
   */
   createUser: function (request, response, next) {
     var user = new User(request.swagger.params.user.value)
-    log.debug('Create request received from: \n' + '\tRemote ip : ' + request.ip + '\n' + '\tand body Form : "' + user + '"')
+    log.debug('Create request received: ' + JSON.stringify(request.swagger.params.user, null, 2))
     User.create(user, function (error, user) {
       if (error) {
         if (error) {
-          log.error('Creating User ERROR: ' + error)
-          return response.status(400).json({message: error.code + ' : ' + error.errmsg}).end()
+          log.error('Creating User ERROR: ' + JSON.stringify(error, null, 2))
+          return response.status(400).json({'message': error.errmsg}).end()
         }
       }
-      log.debug('User information: "' + user + '" => CREATED IN CLIENTS.DB.CIRRUS.IO')
+      log.debug('User information: \n"' + user + '"\n => CREATED IN CLIENTS.DB.CIRRUS.IO')
       return response.status(200).json(user).end()
     })
   },
@@ -97,7 +97,7 @@ module.exports = {
         }
         if (user !== null) {
           log.info('User with ID: "' + id + '" => DELETED from Users Collection')
-          return response.status(200).end()
+          return response.status(200).json().end()
         } else {
           log.info('No user found with id :' + id)
           return response.status(404).json({message: 'Not Found Id: ' + id}).end()
