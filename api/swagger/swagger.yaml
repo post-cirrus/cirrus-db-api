@@ -25,7 +25,7 @@ paths:
     x-swagger-router-controller: users
     get:
       description: Returns a list of users from the Cirrus DB
-      summary: list Users
+      summary: List of users in DB
       operationId: listUsers
       responses:
         "200":
