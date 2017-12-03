@@ -21,7 +21,3 @@
     # The filename will always have the most recent log lines. The larger the appended number, the older the log file.
     # This option requires maxFiles to be set, or it will be ignored.
     tailable = true
-
-[Database]
-    url = "db.cirrus.io"
-    port = 27017
