@@ -3,7 +3,7 @@ info:
   version: "0.0.2"
   title: Cirrus Database API
 # during dev, should point to your local machine
-host: clients.db.cirrus.io:10083
+host: db.api.nubitekk.net:10083
 # basePath prefixes all resource paths
 basePath: /v2
 #
@@ -13,13 +13,59 @@ schemes:
   - https
 # format of bodies a client can send (Content-Type)
 consumes:
-  - application/x-www-form-urlencoded
   - application/json
 # format of the responses to the client (Accepts)
 produces:
   - application/json
-  - text/plain
 paths:
+
+  /code:
+    # binds  app logic to a route
+    x-swagger-router-controller: code
+    
+    get:
+      description: Generate a valide Code based on provided mobile number
+      summary: Generate Code
+      operationId: validateCode
+      parameters:
+        - name: mobile
+          required: true
+          in: body
+          description: Master Community mobile number
+          schema:
+            $ref: "#/definitions/Mobile"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/CodeResponse"
+            
+        "500":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
+    post:
+      description: Checks if the provided code is valide in DB
+      summary: Validates Code
+      operationId: generateCode
+      parameters:
+        - name: code
+          required: true
+          in: body
+          description: Valide Code 
+          schema:
+            $ref: "#/definitions/Code"
+      responses:
+        "200":
+          description: Success
+        "500":
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  
+  
+            
   /users:
     # binds  app logic to a route
     x-swagger-router-controller: users
@@ -444,6 +490,7 @@ paths:
 
 # complex objects have schema definitions
 definitions:
+
   UserListBody:
     required:
       - users
@@ -496,8 +543,14 @@ definitions:
         type: string
       role:
         type: string
+  
+  Mobile:
+    required:
+      - mobile
+    properties:
+      mobile:
+        type: string
       
-
   OAuth:
     required:
       - provider
@@ -553,6 +606,18 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/User"
+          
+  CodeResponse:
+    allOf:
+      - $ref: '#/definitions/Code'
+        
+  Code:
+    required:
+      - code
+    properties:
+      code:
+        type: string
+
 
   ErrorResponse:
     required:
